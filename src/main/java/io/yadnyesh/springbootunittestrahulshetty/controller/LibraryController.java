@@ -4,6 +4,7 @@ import io.yadnyesh.springbootunittestrahulshetty.AddBookResponse;
 import io.yadnyesh.springbootunittestrahulshetty.model.Library;
 import io.yadnyesh.springbootunittestrahulshetty.repository.LibraryRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,11 +23,14 @@ public class LibraryController {
 
     @PostMapping("/books")
     public ResponseEntity<AddBookResponse> addBookToLibrary(@RequestBody Library library) {
-        library.setId(library.getIsbn()+library.getAisle());
+        String id = library.getIsbn()+library.getAisle();
+        library.setId(id);
         libraryRepository.save(library);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("unique", id);
         AddBookResponse addBookResponse = new AddBookResponse();
         addBookResponse.setMsg("The book is successfully added to library collection");
-        addBookResponse.setId(library.getIsbn()+library.getAisle());
-        return new ResponseEntity<>(addBookResponse, HttpStatus.CREATED);
+        addBookResponse.setId(id);
+        return new ResponseEntity<>(addBookResponse, httpHeaders, HttpStatus.CREATED);
     }
 }
