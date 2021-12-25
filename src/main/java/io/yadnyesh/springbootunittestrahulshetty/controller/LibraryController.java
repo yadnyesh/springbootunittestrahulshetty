@@ -8,9 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @Slf4j
@@ -42,8 +41,27 @@ public class LibraryController {
             addBookResponse.setId(bookId);
             return new ResponseEntity<>(addBookResponse, httpHeaders, HttpStatus.ACCEPTED);
         }
+    }
 
-
+    @GetMapping("/books/{bookId}")
+    public Library getBookById(@PathVariable(value = "bookId") String bookId) {
+        try {
+            return libraryRepository.findById(bookId).get();
+        } catch (Exception exception) {
+            throw new  ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
 
     }
+
+//    @GetMapping("/books/{bookId}")
+//    public ResponseEntity<AddBookResponse> getBookById(@PathVariable(value = "bookId") String bookId) {
+//        Library library = libraryRepository.findById(bookId).orElse(null);
+//        HttpHeaders httpHeaders = new HttpHeaders();
+//        AddBookResponse addBookResponse = new AddBookResponse();
+//        httpHeaders.add("method", "Get By Id");
+//        addBookResponse.setId(library.getId());
+//        addBookResponse.setMsg(library.getBook_name());
+//        return new ResponseEntity<>(addBookResponse, httpHeaders, HttpStatus.OK);
+//        //return new ResponseEntity<>(library, httpHeaders, HttpStatus.OK);
+//    }
 }
