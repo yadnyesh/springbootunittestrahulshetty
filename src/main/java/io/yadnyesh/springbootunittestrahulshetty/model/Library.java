@@ -15,7 +15,7 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="Storage2")
+@Table(name="storage2")
 public class Library {
     @Id
     @Column(name = "id")

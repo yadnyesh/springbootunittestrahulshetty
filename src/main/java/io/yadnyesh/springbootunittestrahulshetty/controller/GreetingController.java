@@ -22,4 +22,5 @@ public class GreetingController {
         greeting.setName("Hello " + name);
         return greeting;
     }
+
 }

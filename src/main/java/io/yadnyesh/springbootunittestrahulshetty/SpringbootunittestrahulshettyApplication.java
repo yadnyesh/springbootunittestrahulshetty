@@ -10,7 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.util.Optional;
 
 @SpringBootApplication
-public class SpringbootunittestrahulshettyApplication implements CommandLineRunner {
+public class SpringbootunittestrahulshettyApplication {
 
 	@Autowired
 	LibraryRepository libraryRepository;
@@ -19,10 +19,10 @@ public class SpringbootunittestrahulshettyApplication implements CommandLineRunn
 		SpringApplication.run(SpringbootunittestrahulshettyApplication.class, args);
 	}
 
-	@Override
-	public void run(String... args) throws Exception {
-		Optional<Library> library = libraryRepository.findById("fdsefr343");
-		System.out.println(library.get().getAuthor());
-		libraryRepository.save(new Library("fdsefr311", "my Book", "abcr455",44 , "Author 1" ));
-	}
+//	@Override
+//	public void run(String... args) throws Exception {
+//		Optional<Library> library = libraryRepository.findById("fdsefr343");
+//		System.out.println(library.get().getAuthor());
+//		//libraryRepository.save(new Library("fedup311", "my Book", "abcr455",44 , "Author 1" ));
+//	}
 }
