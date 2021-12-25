@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 @RestController
 @Slf4j
 public class LibraryController {
@@ -50,7 +52,15 @@ public class LibraryController {
         } catch (Exception exception) {
             throw new  ResponseStatusException(HttpStatus.NOT_FOUND);
         }
+    }
 
+    @GetMapping("/books")
+    public List<Library> getBooksByAuthor(@RequestParam(value = "authorname") String authorName) {
+        try {
+            return libraryRepository.findAllBooksByAuthor(authorName);
+        } catch (Exception exception) {
+            throw new  ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
     }
 
 //    @GetMapping("/books/{bookId}")
