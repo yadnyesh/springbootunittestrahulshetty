@@ -27,6 +27,6 @@ public class LibraryController {
         AddBookResponse addBookResponse = new AddBookResponse();
         addBookResponse.setMsg("The book is successfully added to library collection");
         addBookResponse.setId(library.getIsbn()+library.getAisle());
-        return new ResponseEntity<>(addBookResponse, HttpStatus.OK);
+        return new ResponseEntity<>(addBookResponse, HttpStatus.CREATED);
     }
 }
