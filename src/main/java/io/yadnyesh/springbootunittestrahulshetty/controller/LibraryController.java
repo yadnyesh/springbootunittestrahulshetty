@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @Slf4j
@@ -61,6 +62,18 @@ public class LibraryController {
         } catch (Exception exception) {
             throw new  ResponseStatusException(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @PutMapping("/books/{bookId}")
+    public ResponseEntity<Library> updateBookById(@PathVariable(value = "bookId") String bookId,@RequestBody Library library) {
+        Library existingBook = libraryRepository.findById(bookId).get();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        existingBook.setAisle(library.getAisle());
+        existingBook.setAuthor(library.getAuthor());
+        existingBook.setBook_name(library.getBook_name());
+        libraryRepository.save(existingBook);
+        httpHeaders.add("updateApi","successfully updated the object.");
+        return new ResponseEntity<>(existingBook, httpHeaders, HttpStatus.OK);
     }
 
 //    @GetMapping("/books/{bookId}")
