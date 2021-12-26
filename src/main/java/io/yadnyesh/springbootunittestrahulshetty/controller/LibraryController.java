@@ -33,10 +33,12 @@ public class LibraryController {
         AddBookResponse addBookResponse = new AddBookResponse();
         HttpHeaders httpHeaders = new HttpHeaders();
         if(!libraryService.checkIfBookAlreadyExists(bookId)){
-
+            log.info("Creating the book by saving input details");
             httpHeaders.add("unique", bookId);
             addBookResponse.setMsg("The book is successfully added to library collection");
             addBookResponse.setId(bookId);
+            library.setId(bookId);
+            libraryRepository.save(library);
             return new ResponseEntity<>(addBookResponse, httpHeaders, HttpStatus.CREATED);
         } else {
             httpHeaders.add("unique", bookId);
@@ -49,6 +51,7 @@ public class LibraryController {
     @GetMapping("/books/{bookId}")
     public Library getBookById(@PathVariable(value = "bookId") String bookId) {
         try {
+            log.info("Finding details of book {}", bookId);
             return libraryRepository.findById(bookId).get();
         } catch (Exception exception) {
             throw new  ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -57,6 +60,7 @@ public class LibraryController {
 
     @GetMapping("/books")
     public List<Library> getBooksByAuthor(@RequestParam(value = "authorname") String authorName) {
+        log.info("Fetching details of all books by author: {} ", authorName);
         try {
             return libraryRepository.findAllBooksByAuthor(authorName);
         } catch (Exception exception) {
@@ -73,7 +77,16 @@ public class LibraryController {
         existingBook.setBook_name(library.getBook_name());
         libraryRepository.save(existingBook);
         httpHeaders.add("updateApi","successfully updated the object.");
+        log.info("Updated details of book {}", bookId);
         return new ResponseEntity<>(existingBook, httpHeaders, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/books")
+    public ResponseEntity<String> deleteBookById(@RequestBody Library library){
+        Library existingBook = libraryRepository.findById(library.getId()).get();
+        libraryRepository.deleteById(existingBook.getId());
+        log.info("Delete the book with id: {}", library.getId());
+        return new ResponseEntity<>("Successfully delete the book having id: " + existingBook.getId(), HttpStatus.OK);
     }
 
 //    @GetMapping("/books/{bookId}")

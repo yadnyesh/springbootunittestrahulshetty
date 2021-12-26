@@ -24,7 +24,6 @@ public class LibraryRepositoryImpl implements LibraryRepositoryCustom{
         List<Library> booksByAuthor = new ArrayList<>();
         for (Library book: books){
             if(book.getAuthor().equalsIgnoreCase(authorName)) {
-                log.info(book.getAuthor());
                 booksByAuthor.add(book);
             }
         }
