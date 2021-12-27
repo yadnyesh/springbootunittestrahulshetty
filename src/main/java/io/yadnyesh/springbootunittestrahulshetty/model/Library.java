@@ -1,9 +1,6 @@
 package io.yadnyesh.springbootunittestrahulshetty.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,6 +12,7 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@ToString
 @Table(name="storage2")
 public class Library {
     @Id
