@@ -83,7 +83,7 @@ public class LibraryController {
 
     @DeleteMapping("/books")
     public ResponseEntity<String> deleteBookById(@RequestBody Library library){
-        Library existingBook = libraryRepository.findById(library.getId()).get();
+        Library existingBook = libraryService.getBookByBookId(library.getId());
         libraryRepository.deleteById(existingBook.getId());
         log.info("Delete the book with id: {}", library.getId());
         return new ResponseEntity<>("Successfully delete the book having id: " + existingBook.getId(), HttpStatus.OK);

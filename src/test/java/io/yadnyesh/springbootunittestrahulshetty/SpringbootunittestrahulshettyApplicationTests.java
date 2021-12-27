@@ -23,6 +23,7 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -132,7 +133,13 @@ class SpringbootunittestrahulshettyApplicationTests {
 				.andExpect(content().json("{\"id\":\"sfe322\",\"book_name\":\"SpringBoot\",\"isbn\":\"sfe\",\"aisle\":322,\"author\":\"yadnyeshbharatjuvekar\"}"));
 	}
 
+	@Test
 	public void deleteBookById() throws Exception{
+		when(libraryService.getBookByBookId(any())).thenReturn(buildLibrary());
+		doNothing().when(libraryRepository).deleteById(buildLibrary().getId());
+		this.mockMvc.perform(delete("/books").contentType(MediaType.APPLICATION_JSON).content("{\n" +
+				"  \"id\": \"sfe322\"\n" +
+				"}")).andDo(print()).andExpect(status().isOk()).andExpect(content().string("Successfully delete the book having id: sfe322"));
 
 	}
 
