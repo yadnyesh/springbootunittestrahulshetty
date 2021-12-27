@@ -24,11 +24,9 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @Slf4j
@@ -55,6 +53,16 @@ class SpringbootunittestrahulshettyApplicationTests {
 		library.setIsbn("sfe");
 		library.setId("sfe322");
 		library.setAuthor("yadnyesh");
+		return library;
+	}
+
+	public Library updateLibrary() {
+		Library library = new Library();
+		library.setAisle(322);
+		library.setBook_name("SpringBoot");
+		library.setIsbn("sfe");
+		library.setId("sfe322");
+		library.setAuthor("yadnyeshbharatjuvekar");
 		return library;
 	}
 
@@ -108,6 +116,23 @@ class SpringbootunittestrahulshettyApplicationTests {
 				.andDo(print()).andExpect(status().isOk())
 				.andExpect(jsonPath("$.length()",is(2)))
 				.andExpect(jsonPath("$.[0].id").value("sfe322"));
+
+	}
+
+	@Test
+	public void updateBookByIdTest() throws Exception{
+		Library library = buildLibrary();
+		ObjectMapper objectMapper = new ObjectMapper();
+		String jsonString = objectMapper.writeValueAsString(updateLibrary());
+		when(libraryService.getBookByBookId(any())).thenReturn(buildLibrary());
+		this.mockMvc.perform(put("/books/"+library.getId())
+								.contentType(MediaType.APPLICATION_JSON)
+						        .content(jsonString))
+					.andDo(print()).andExpect(status().isOk())
+				.andExpect(content().json("{\"id\":\"sfe322\",\"book_name\":\"SpringBoot\",\"isbn\":\"sfe\",\"aisle\":322,\"author\":\"yadnyeshbharatjuvekar\"}"));
+	}
+
+	public void deleteBookById() throws Exception{
 
 	}
 

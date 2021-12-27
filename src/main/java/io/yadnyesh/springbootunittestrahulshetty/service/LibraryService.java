@@ -1,5 +1,6 @@
 package io.yadnyesh.springbootunittestrahulshetty.service;
 
+import io.yadnyesh.springbootunittestrahulshetty.model.Library;
 import io.yadnyesh.springbootunittestrahulshetty.repository.LibraryRepository;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,5 +27,9 @@ public class LibraryService {
 
     public boolean checkIfBookAlreadyExists(String bookId) {
         return libraryRepository.findById(bookId).isPresent();
+    }
+
+    public Library getBookByBookId(String bookId) {
+        return libraryRepository.findById(bookId).get();
     }
 }

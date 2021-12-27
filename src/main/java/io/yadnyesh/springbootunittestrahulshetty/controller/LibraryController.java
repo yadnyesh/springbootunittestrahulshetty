@@ -70,7 +70,7 @@ public class LibraryController {
 
     @PutMapping("/books/{bookId}")
     public ResponseEntity<Library> updateBookById(@PathVariable(value = "bookId") String bookId,@RequestBody Library library) {
-        Library existingBook = libraryRepository.findById(bookId).get();
+        Library existingBook = libraryService.getBookByBookId(bookId);
         HttpHeaders httpHeaders = new HttpHeaders();
         existingBook.setAisle(library.getAisle());
         existingBook.setAuthor(library.getAuthor());
