@@ -1,5 +1,6 @@
 package io.yadnyesh.springbootunittestrahulshetty;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.yadnyesh.springbootunittestrahulshetty.controller.LibraryController;
 import io.yadnyesh.springbootunittestrahulshetty.model.Library;
 import io.yadnyesh.springbootunittestrahulshetty.repository.LibraryRepository;
@@ -8,15 +9,22 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.web.servlet.MockMvc;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @Slf4j
+@AutoConfigureMockMvc
 class SpringbootunittestrahulshettyApplicationTests {
 
 	@Autowired
@@ -25,6 +33,8 @@ class SpringbootunittestrahulshettyApplicationTests {
 	LibraryRepository libraryRepository;
 	@MockBean
 	LibraryService libraryService;
+	@Autowired
+	private MockMvc mockMvc;
 
 	@Test
 	void contextLoads() {
@@ -59,9 +69,24 @@ class SpringbootunittestrahulshettyApplicationTests {
 		log.info(response.getStatusCode().toString());
 		log.info(response.getHeaders().toString());
 		AddBookResponse addBookResponse = (AddBookResponse) response.getBody();
-		log.info(addBookResponse.toString());
 		Assertions.assertEquals(response.getStatusCode(), HttpStatus.ACCEPTED);
 		Assertions.assertEquals(library.getId(), addBookResponse.getId());
+	}
+
+	@Test
+	public void addBookControllerTest() throws Exception {
+		Library library = buildLibrary();
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		String jsonString = objectMapper.writeValueAsString(library);
+
+		when(libraryService.buildId(library.getIsbn(), library.getAisle())).thenReturn(library.getId());
+		when(libraryService.checkIfBookAlreadyExists(library.getId())).thenReturn(false);
+		when(libraryRepository.save(any())).thenReturn(library);
+		ResponseEntity response = libraryController.addBookToLibrary(library);
+		this.mockMvc.perform(post("/books").contentType(MediaType.APPLICATION_JSON)
+				.content(jsonString)).andExpect(status().isCreated());
+
 	}
 
 }
