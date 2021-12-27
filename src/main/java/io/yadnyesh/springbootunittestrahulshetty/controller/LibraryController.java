@@ -62,7 +62,8 @@ public class LibraryController {
     public List<Library> getBooksByAuthor(@RequestParam(value = "authorname") String authorName) {
         log.info("Fetching details of all books by author: {} ", authorName);
         try {
-            return libraryRepository.findAllBooksByAuthor(authorName);
+            //return libraryRepository.findAllBooksByAuthor(authorName);
+            return libraryRepository.findAll();
         } catch (Exception exception) {
             throw new  ResponseStatusException(HttpStatus.NOT_FOUND);
         }
