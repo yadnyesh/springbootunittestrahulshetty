@@ -16,10 +16,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -85,7 +93,21 @@ class SpringbootunittestrahulshettyApplicationTests {
 		when(libraryRepository.save(any())).thenReturn(library);
 		ResponseEntity response = libraryController.addBookToLibrary(library);
 		this.mockMvc.perform(post("/books").contentType(MediaType.APPLICATION_JSON)
-				.content(jsonString)).andExpect(status().isCreated());
+				.content(jsonString)).andDo(print()).andExpect(status().isCreated())
+				.andExpect(jsonPath("$.id").value("sfe322"));
+
+	}
+
+	@Test
+	public void getBooksByAuthor() throws Exception {
+		List<Library> libraryList = new ArrayList<>();
+		libraryList.add(buildLibrary());
+		libraryList.add(buildLibrary());
+		when(libraryRepository.findAllBooksByAuthor(any())).thenReturn(libraryList);
+		this.mockMvc.perform(get("/books").param("authorname", "yadnyesh"))
+				.andDo(print()).andExpect(status().isOk())
+				.andExpect(jsonPath("$.length()",is(2)))
+				.andExpect(jsonPath("$.[0].id").value("sfe322"));
 
 	}
 
